@@ -1,86 +1,92 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-const Register = () => {
- const [username, setUsername] = useState('');
- const [email, setEmail] = useState('');
- const [password, setPassword] = useState('');
- const [message, setMessage] = useState('');
- const navigate = useNavigate();
- const API_URL = 'http://localhost:5000/api/auth/register';
- const handleRegister = async (e) => {
- e.preventDefault();
- setMessage('');
- try {
- const response = await fetch(API_URL, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ username, email, password }),
- });
- const data = await response.json();
- if (response.ok) {
- setMessage('Registration successful! Redirecting to login...');
- setTimeout(() => navigate('/login'), 1500);
- } else {
- setMessage(`Error: ${data.message || 'Registration failed.'}`);
- }
- } catch (err) {
- console.error(err);
- setMessage('Cannot connect to server.');
- }
- };
- const alertClass = message.includes('successful') ? 'alert-success' : 'alert-danger';
- return (
- <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
- <div className="card p-4 shadow-lg" style={{ maxWidth: '400px', width: '100%' }}>
- <h2 className="h3 text-center text-primary mb-4 fw-bold">Register
-Account</h2>
- {message && <div className={`alert ${alertClass} rounded`}
-role="alert">{message}</div>}
- <form onSubmit={handleRegister}>
- <div className="mb-3">
- <label className="form-label fw-bold"
-htmlFor="username">Username</label>
- <input
- type="text"
- id="username"
- value={username}
- onChange={(e) => setUsername(e.target.value)}
- className="form-control"
- placeholder="Your username"
- required
- />
- </div>
- <div className="mb-3">
- <label className="form-label fw-bold" htmlFor="email">Email</label>
- <input
- type="email"
- id="email"
- value={email}
- onChange={(e) => setEmail(e.target.value)}
- className="form-control"
- placeholder="user@example.com"
- required
- />
- </div>
- <div className="mb-3">
- <label className="form-label fw-bold"
-htmlFor="password">Password</label>
- <input
- type="password"
- id="password"
- value={password}
- onChange={(e) => setPassword(e.target.value)}
- className="form-control"
- placeholder="***********"
- required
- />
- </div>
- <div className="d-grid mt-4">
- <button type="submit" className="btn btn-primary fwbold">Register</button>
- </div>
- </form>
- </div>
- </div>
- );
-};
-export default Register;
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+export default function Services() {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
+    const fetchPosts = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/blog');
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data);
+            } else {
+                setError('Failed to load blog posts');
+            }
+        } catch (err) {
+            setError('Cannot connect to server');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="container mt-4">
+                <div className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="container mt-4">
+            <h2>📝 Blog Articles</h2>
+            <p className="text-muted">Browse our latest blog posts:</p>
+
+            {error && <div className="alert alert-danger">{error}</div>}
+
+            {posts.length === 0 ? (
+                <div className="alert alert-info">
+                    No blog posts yet. Create your first post using the API!
+                </div>
+            ) : (
+                <div className="list-group">
+                    {posts.map((post) => (
+                        <Link
+                            key={post._id}
+                            to={`/articles/${post._id}`}
+                            className="list-group-item list-group-item-action"
+                        >
+                            <div className="d-flex w-100 justify-content-between">
+                                <h5 className="mb-1">{post.title}</h5>
+                                <small className="text-muted">
+                                    {new Date(post.createdAt).toLocaleDateString()}
+                                </small>
+                            </div>
+                            <p className="mb-1 text-muted">
+                                {post.content.substring(0, 100)}...
+                            </p>
+                            <small>By {post.author}</small>
+                        </Link>
+                    ))}
+                </div>
+            )}
+
+            {/* Sample static links for testing */}
+            <div className="mt-4">
+                <h5>Sample Articles (Static)</h5>
+                <div className="list-group">
+                    <Link to="/articles/sample1" className="list-group-item list-group-item-action">
+                        📰 Blog Article #1 - Getting Started
+                    </Link>
+                    <Link to="/articles/sample2" className="list-group-item list-group-item-action">
+                        📰 Blog Article #2 - Advanced Topics
+                    </Link>
+                    <Link to="/articles/sample3" className="list-group-item list-group-item-action">
+                        📰 Blog Article #3 - Best Practices
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+}

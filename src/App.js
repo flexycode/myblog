@@ -8,62 +8,76 @@ import Contact from './components/Contact.js';
 import Login from './components/Login.js';
 import Register from './components/Register.js';
 import Dashboard from './components/Dashboard.js';
+import ArticleDetail from './components/ArticleDetail.js';
 import Footer from './components/Footer.js';
+
 // SESSION FUNCTIONS
 function getSessionUser() {
- return sessionStorage.getItem("user");
+    return sessionStorage.getItem("user");
 }
+
 function clearSessionUser() {
- sessionStorage.removeItem("user");
+    sessionStorage.removeItem("user");
 }
+
 // LOGOUT COMPONENT
 function Logout({ onLogout }) {
- const navigate = useNavigate();
- useEffect(() => {
- clearSessionUser();
- if (onLogout) onLogout();
- navigate('/login');
- }, [navigate, onLogout]);
- return null;
+    const navigate = useNavigate();
+    useEffect(() => {
+        clearSessionUser();
+        if (onLogout) onLogout();
+        navigate('/login');
+    }, [navigate, onLogout]);
+    return null;
 }
+
 // PROTECTED ROUTE WRAPPER
 function PrivateRoute({ children }) {
- const user = getSessionUser();
- if (!user) {
- return <Navigate to="/login" replace />;
- }
- return children;
+    const user = getSessionUser();
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+    return children;
 }
+
 export default function App() {
- const [currentUser, setCurrentUser] = useState(getSessionUser());
- function handleLogin(username) {
- setCurrentUser(username);
- }
- function handleLogout() {
- setCurrentUser(null);
- }
- return (
- <Router>
- <div className="d-flex flex-column min-vh-100">
- <AppNavbar currentUser={currentUser} />
- <Routes>
- <Route path="/" element={<HomePage />} />
- <Route path="/about" element={<About />} />
- <Route path="/services" element={<Services />} />
- <Route path="/contact" element={<Contact />} />
- <Route path="/login" element={<Login onLogin={handleLogin} />} />
- <Route path="/register" element={<Register />} />
- <Route path="/home" element={
- <PrivateRoute>
- <Dashboard />
- </PrivateRoute>
- } />
- <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
- {/* fallback */}
- <Route path="*" element={<Navigate to="/" replace />} />
- </Routes>
- <Footer />
- </div>
- </Router>
- );
+    const [currentUser, setCurrentUser] = useState(getSessionUser());
+
+    function handleLogin(username) {
+        setCurrentUser(username);
+    }
+
+    function handleLogout() {
+        setCurrentUser(null);
+    }
+
+    return (
+        <Router>
+            <div className="d-flex flex-column min-vh-100">
+                <AppNavbar currentUser={currentUser} />
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/services" element={<Services />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                    <Route path="/register" element={<Register />} />
+
+                    {/* Article Detail Route */}
+                    <Route path="/articles/:id" element={<ArticleDetail />} />
+
+                    <Route path="/home" element={
+                        <PrivateRoute>
+                            <Dashboard />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
+
+                    {/* fallback */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+                <Footer />
+            </div>
+        </Router>
+    );
 }

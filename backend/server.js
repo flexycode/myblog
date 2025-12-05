@@ -1,42 +1,78 @@
-// backend/server.js
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
-import fs from "fs";
 import { fileURLToPath } from "url";
-import authRoutes from "./authRoutes.js";
 
+// ===== Fix __dirname for ES modules & load .env properly =====
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, ".env") });
 
-const envPath = path.join(__dirname, ".env");
-console.log("Checking .env at:", envPath);
-console.log("Exists?", fs.existsSync(envPath));
-
-// load .env
-dotenv.config({ path: envPath });
-
-// debug prints
-console.log("Loaded MONGO_URI =", process.env.MONGO_URI ? "[OK]" : "undefined");
-console.log("Loaded PORT =", process.env.PORT);
+// ===== Routes Imports =====
+import authRoutes from "./authRoutes.js";
+import blogRoutes from "./blogRoutes.js";
+import commentRoutes from "./commentRoutes.js";
 
 const app = express();
-app.use(cors());
+
+// ===== Middleware (CORS & Body Parsing) =====
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// Set up routes
-app.use("/api/auth", authRoutes);
+// ===== Routes =====
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
-// connect with simple error handling
+app.use("/api/auth", authRoutes);
+app.use("/api/blog", blogRoutes);
+app.use("/api/comments", commentRoutes);
+
+// ===== MongoDB Connection & Debugging =====
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error("❌ Fatal: MONGO_URI is not defined in environment variables or .env file.");
+  process.exit(1);
+}
+
+const db = mongoose.connection;
+
+db.on("error", (err) => {
+  console.error("❌ Mongoose default connection error: " + err);
+});
+
+db.on("disconnected", () => {
+  console.log("⚠️ Mongoose default connection disconnected");
+});
+
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB Connected √");
-    const port = process.env.PORT || 5000;
-    app.listen(port, () => console.log(`Server running on port ${port}`));
-  })
+  .connect(MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected successfully to Atlas!"))
   .catch((err) => {
-    console.error("MongoDB Connection Error:", err.message);
+    console.error("❌ MongoDB connection failed during startup:", err.message);
+    process.exit(1);
+  });
+
+// ===== Server Startup =====
+const PORT = process.env.PORT || 5000;
+
+app
+  .listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  })
+  .on("error", (e) => {
+    if (e.code === "EADDRINUSE") {
+      console.error(`❌ Port ${PORT} is already in use. Try a different port or stop the conflicting process.`);
+    } else {
+      console.error("❌ Server startup failed:", e.message);
+    }
+    process.exit(1);
   });

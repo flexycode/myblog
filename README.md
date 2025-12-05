@@ -19,6 +19,7 @@ A full-stack blogging platform built with **React**, **Node.js**, **Express**, a
 - [🔐 Environment Variables](#-environment-variables)
 - [📜 Available Scripts](#-available-scripts)
 - [🔗 API Endpoints](#-api-endpoints)
+- [📮 Postman Testing](#-postman-testing)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
@@ -28,11 +29,12 @@ A full-stack blogging platform built with **React**, **Node.js**, **Express**, a
 
 | Feature | Description |
 |---------|-------------|
-| 🔐 **User Authentication** | Secure login and registration with JWT tokens |
+| 🔐 **User Authentication** | Secure login and registration with role-based access (Admin/User) |
 | ✍️ **Blog Management** | Create, read, update, and delete blog posts |
-| � **Dashboard** | Personal dashboard to manage your content |
+| 💬 **Comments System** | Add and view comments on blog posts |
+| 📊 **Dashboard** | Personal dashboard to manage your content |
+| 👤 **Role-Based Users** | Support for Admin and User roles |
 | 🎨 **Responsive Design** | Beautiful UI that works on all devices |
-| � **Fast & Reliable** | Built with modern technologies for optimal performance |
 
 ---
 
@@ -61,23 +63,26 @@ A full-stack blogging platform built with **React**, **Node.js**, **Express**, a
 myblog/
 ├── 📂 backend/
 │   ├── 📄 server.js          # Express server & MongoDB connection
-│   ├── 📄 authRoutes.js      # Authentication routes
-│   ├── 📄 userModel.js       # User schema model
-│   └── 📄 .env               # Environment variables (create this!)
-├── 📂 public/
-│   └── 📄 index.html         # HTML template
+│   ├── 📄 authRoutes.js      # Authentication routes (register/login)
+│   ├── 📄 blogRoutes.js      # Blog post CRUD routes
+│   ├── 📄 commentRoutes.js   # Comments routes
+│   ├── 📄 userModel.js       # User schema (with role)
+│   ├── 📄 blogPostModel.js   # Blog post schema
+│   ├── 📄 commentModel.js    # Comment schema
+│   └── 📄 .env               # Environment variables
 ├── 📂 src/
 │   ├── 📂 components/
-│   │   ├── 📄 AppNavbar.js   # Navigation bar
-│   │   ├── 📄 Dashboard.js   # Dashboard component
-│   │   ├── 📄 HomePage.js    # Landing page
-│   │   ├── 📄 Login.js       # Login form
-│   │   ├── 📄 Register.js    # Registration form
-│   │   ├── 📄 Services.js    # Services page
-│   │   ├── 📄 About.js       # About page
-│   │   ├── 📄 Contact.js     # Contact page
-│   │   └── 📄 Footer.js      # Footer component
-│   ├── 📄 App.js             # Main application component
+│   │   ├── 📄 AppNavbar.js     # Navigation bar
+│   │   ├── 📄 Dashboard.js     # Dashboard component
+│   │   ├── 📄 HomePage.js      # Landing page
+│   │   ├── 📄 Login.js         # Login form
+│   │   ├── 📄 Register.js      # Registration (with role selector)
+│   │   ├── 📄 Services.js      # Blog articles list
+│   │   ├── 📄 ArticleDetail.js # View post with comments
+│   │   ├── 📄 About.js         # About page
+│   │   ├── 📄 Contact.js       # Contact page
+│   │   └── 📄 Footer.js        # Footer component
+│   ├── 📄 App.js             # Main application with routes
 │   ├── 📄 App.css            # Application styles
 │   └── 📄 index.js           # React entry point
 ├── 📄 package.json           # Dependencies and scripts
@@ -93,6 +98,7 @@ Before you begin, ensure you have the following installed:
 - 📦 **Node.js** (v18 or higher) - [Download](https://nodejs.org/)
 - 🍃 **MongoDB Atlas Account** - [Sign Up](https://www.mongodb.com/atlas)
 - 💻 **Git** - [Download](https://git-scm.com/)
+- 📮 **Postman** (optional) - [Download](https://www.postman.com/downloads/)
 
 ---
 
@@ -121,17 +127,19 @@ Create a `.env` file in the `backend/` directory (see [Environment Variables](#-
 npm run dev
 ```
 
-🎉 **That's it!** Open [http://localhost:3000](http://localhost:3000) in your browser.
+🎉 **That's it!** 
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:5000](http://localhost:5000)
 
 ---
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the `backend/` directory with the following variables:
+Create a `.env` file in the `backend/` directory:
 
 ```env
 # MongoDB Configuration
-MONGO_URI=mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/myblog?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/myblog?retryWrites=true&w=majority
 
 # Server Port
 PORT=5000
@@ -140,14 +148,7 @@ PORT=5000
 JWT_SECRET=your_jwt_secret_key_here
 ```
 
-### 🔑 How to Get MongoDB URI
-
-1. Go to [MongoDB Atlas](https://cloud.mongodb.com/)
-2. Create a new cluster (or use existing)
-3. Click **"Connect"** → **"Drivers"** → **"Node.js"**
-4. Copy the connection string and replace credentials
-
-> ⚠️ **Important:** Whitelist your IP address in MongoDB Atlas Network Access settings!
+> ⚠️ **Important:** Whitelist your IP address in MongoDB Atlas Network Access!
 
 ---
 
@@ -155,22 +156,97 @@ JWT_SECRET=your_jwt_secret_key_here
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | 🚀 Runs both frontend and backend concurrently |
-| `npm start` | ⚛️ Runs only the React frontend (port 3000) |
-| `npm run backend` | 🖥️ Runs only the Express backend (port 5000) |
-| `npm run build` | 📦 Builds the app for production |
-| `npm test` | 🧪 Runs the test suite |
+| `npm run dev` | 🚀 Runs frontend + backend concurrently |
+| `npm start` | ⚛️ Runs React frontend only (port 3000) |
+| `npm run backend` | 🖥️ Runs Express backend only (port 5000) |
+| `npm run build` | 📦 Builds for production |
+| `npm test` | 🧪 Runs test suite |
 
 ---
 
 ## 🔗 API Endpoints
 
-### Authentication
+### 🔐 Authentication
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/auth/register` | Register a new user |
-| `POST` | `/api/auth/login` | Login and get JWT token |
+| `POST` | `/api/auth/register` | Register new user (with role) |
+| `POST` | `/api/auth/login` | Login and get user info |
+
+### 📝 Blog Posts
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/blog` | Get all blog posts |
+| `GET` | `/api/blog/:id` | Get single blog post |
+| `POST` | `/api/blog` | Create new blog post |
+| `PUT` | `/api/blog/:id` | Update blog post |
+| `DELETE` | `/api/blog/:id` | Delete blog post |
+
+### 💬 Comments
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/comments/:postId` | Get comments for a post |
+| `POST` | `/api/comments` | Create new comment |
+| `DELETE` | `/api/comments/:id` | Delete comment |
+
+---
+
+## 📮 Postman Testing
+
+### Register Admin User
+```
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "admin@example.com",
+  "password": "password123",
+  "role": "admin"
+}
+```
+
+### Login
+```
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password123"
+}
+```
+
+### Create Blog Post
+```
+POST http://localhost:5000/api/blog
+Content-Type: application/json
+
+{
+  "title": "My First Blog Post",
+  "content": "This is the content of my blog post...",
+  "author": "admin"
+}
+```
+
+### Get All Posts
+```
+GET http://localhost:5000/api/blog
+```
+
+### Add Comment
+```
+POST http://localhost:5000/api/comments
+Content-Type: application/json
+
+{
+  "postId": "<blog-post-id>",
+  "user": "admin",
+  "text": "Great post!"
+}
+```
 
 ---
 
