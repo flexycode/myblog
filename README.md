@@ -1,3 +1,7 @@
+<!-- Background github cover with short introduction down below -->
+<img src="https://github.com/flexycode/flexycode/blob/main/assets/ragnarok-online.png" />
+
+
 # 📝 MyBlog
 
 A full-stack blogging platform built with **React**, **Node.js**, **Express**, and **MongoDB**. Create, share, and manage your blog posts with a modern, responsive interface.
@@ -279,6 +283,7 @@ Contributions are welcome!
 
 This project is licensed under the **MIT License**.
 
+#### Git Commit Message: 🌿 My Macaroni Fruit Salad
 ---
 
 <p align="center">
