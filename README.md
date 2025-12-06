@@ -260,6 +260,19 @@ Contributions are welcome!
 4. 📤 Push to the branch (`git push origin feature/AmazingFeature`)
 5. 🔃 Open a Pull Request
 
+
+<!-- Contributors down below, kindly paste your github URL thanks and also you can revise your suited job title position -->
+### 👋 Contributors
+### Special thanks to all my groupmates: 
+ * ####  😎 [Jay Arre Talosig](https://github.com/flexycode) - Machine Learning Engineer | Blockchain Developer | Bioinformatics Scientist    
+ * ####  🕵️ [Alexander Castilo](https://github.com/xandercastillo0305-dev) - Penetration Tester | Software Engineer | Threat Researcher
+ * ####  🧑‍💻 [Mark Jhoshua Taberna](https://github.com/MjTaberna) - Digital Forensics Analyst | UI Specialist | Full Stack Engineer 
+ * ####  🧑‍💻 [Charles Medio](https://github.com/charles41onlyy) - Machine Learning Engineer | Software Engineer
+ * ####  🕵️ [Tristan Jhay Salamat](https://github.com/xandercastillo0305-dev) - Full Stack Engineer | Forensics Analyst | QA Engineer
+
+
+ * ####  🕵️‍♀️ [Rinoah Venedict Dela Rama](https://github.com/Noah-dev2217) - Forensic Analyst | QA Engineer | Data Engineer 
+ * ####  🥷 [Nicko Nehcterg Dalida](https://github.com/nicknicndin) - Digital Forensics Analyst | QA Engineer | Smart Contract Auditor
 ---
 
 ## 📄 License
@@ -271,3 +284,27 @@ This project is licensed under the **MIT License**.
 <p align="center">
   Made with ❤️ by <a href="https://github.com/flexycode">flexycode</a>
 </p>
+
+<!-- End point line insert Thanks for visiting enjoy your day, feel free to modify this  -->
+---
+<p align="center">
+<img src="https://readme-typing-svg.demolab.com/?lines=Thanks+For+Visiting+Enjoy+Your+Day+~!;" alt="mystreak"/>
+</p>
+
+<!-- Genshin Impact -->
+<div align="center">
+<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGxxeWR5bzJjajBnc3o5YTc5dGhzc2xsYWJ4aW5rOGZuamNtMjdnayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1rL7L4GaUTe55s5Sfm/giphy.gif" width="300">
+<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXk2cnByenBzdHR2Y2plYmxyYnVoY2pjaWRlOTRjcTBrMWV3czI0diZlcD12MV9naWZzX3NlYXJjaCZjdD1n/TH1EAFhvE2ucRSMkPC/giphy.gif" width="300">
+</div>
+
+<!-- End point line insert Comeback again next time, feel free to modify this  -->
+<p align="center">
+<img src="https://readme-typing-svg.demolab.com/?lines=Come+Back+Again+next+time" alt="mystreak"/>
+</p>
+
+</p>
+    
+<br>
+<!-- End point insert background effect line of sight color red -->
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="1000">
+
